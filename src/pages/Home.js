@@ -1,6 +1,7 @@
 import {
   MDBBtn,
   MDBIcon,
+  MDBSpinner,
   MDBTable,
   MDBTableBody,
   MDBTableHead,
@@ -9,18 +10,29 @@ import {
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { loadUserStart } from "../redux/action";
+import { deleteUserStart, loadUserStart } from "../redux/action";
 
 function Home() {
-  const { users } = useSelector((state) => state.data);
+  const { users, loading } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadUserStart());
   }, []);
 
   const handleDelete = (id) => {
-    console.log("delete btn");
+    if (window.confirm("Are you sure you want to delete the Asset")) {
+      dispatch(deleteUserStart(id));
+    }
   };
+
+  if (loading) {
+    return (
+      <MDBSpinner>
+        <span className="visually-hidden">Loading...</span>
+      </MDBSpinner>
+    );
+  }
+
   return (
     <div className="container" style={{ margin: "15px auto" }}>
       <MDBTable>
@@ -34,19 +46,19 @@ function Home() {
           </tr>
         </MDBTableHead>
         {users &&
-          users.map((items, index) => (
+          users.map((item, index) => (
             <MDBTableBody key={index}>
               <tr>
                 <th scope="row">{index + 1}</th>
-                <td scope="row">{items.name}</td>
-                <td scope="row">{items.description}</td>
-                <td scope="row">{items.sourceApp}</td>
+                <td scope="row">{item.name}</td>
+                <td scope="row">{item.description}</td>
+                <td scope="row">{item.sourceApp}</td>
                 <td>
                   <MDBBtn
                     className="m-1"
                     tag="a"
                     color="none"
-                    onClick={() => handleDelete(items.id)}
+                    onClick={() => handleDelete(item.id)}
                   >
                     <MDBTooltip title="Delete" tag="a">
                       <MDBIcon
@@ -56,22 +68,31 @@ function Home() {
                         size="lg"
                       />
                     </MDBTooltip>
-                    <Link to={`/editUser/${items.id}`}>
+                  </MDBBtn>
+                  <MDBBtn className="m-1" tag="a" color="none">
+                    <Link to={`/editUser/${item.id}`}>
                       <MDBTooltip title="Edit" tag="a">
                         <MDBIcon
                           fas
                           icon="pen"
-                          style={{ color: "#000", marginLeft:"20px" }}
+                          style={{ color: "#000", marginLeft: "20px" }}
                           size="lg"
                         />
                       </MDBTooltip>
                     </Link>
-                    <Link to={`/userInfo/${items.id}`}>
+                  </MDBBtn>
+                  <MDBBtn
+                    className="m-1"
+                    tag="a"
+                    color="none"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    <Link to={`/userInfo/${item.id}`}>
                       <MDBTooltip title="view" tag="a">
                         <MDBIcon
                           fas
                           icon="eye"
-                          style={{ color: "#55acee", marginLeft:"20px" }}
+                          style={{ color: "#55acee", marginLeft: "20px" }}
                           size="lg"
                         />
                       </MDBTooltip>
