@@ -10,6 +10,7 @@ import UserInfo from "./pages/UserInfo";
 
 function App() {
   return (
+    <>
     <BrowserRouter>
       <div className="App">
         <ToastContainer />
@@ -22,8 +23,8 @@ function App() {
           <Route path="/about" component={About} />
           </Switch>
       </div>
-
     </BrowserRouter>
+    </>
   );
 }
 
